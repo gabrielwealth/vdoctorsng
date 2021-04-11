@@ -1,0 +1,28 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/TeleMedicine/bin/Debug/netcoreapp3.1
+####node modules
+TeleMedicine/TeleMedicine/node_modules/
+
+TeleMedicine/wwwroot/dist/
+FewaTelemedicine/wwwroot/ClientApp/
+
+##obj folder
+TeleMedicine/obj
+
+##Migration folder
+TeleMedicine/Migrations
+
+*.lock
+*.log
+bin
+obj
+.vs
+package-lock.json
+$tf/
+
+*.xlsx
+
+

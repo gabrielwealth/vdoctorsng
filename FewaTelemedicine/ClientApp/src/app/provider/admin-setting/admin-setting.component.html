@@ -1,0 +1,326 @@
+<style>
+    .saveBtn:disabled {
+        cursor: not-allowed;
+        opacity: .6;
+        background: red;
+    }
+</style>
+<div class="fewa_header">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="pageTitle">
+                <h1>Admin Settings</h1>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 text-right">
+            <ul>
+                <li>
+                    <div class="dropdown">
+                        <div class="profileHeader dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <p *ngIf="(global.providerObj.name==null && providerObj.name==null)||(global.providerObj.name=='' && providerObj.name=='')">
+                                Upload Profile</p>
+                            <p> {{providerObj.nameTitle}}&nbsp;{{providerObj.name}}&nbsp;</p>
+                            <div class="profilePic">
+                                <img *ngIf="!providerObj.image" src="/assets/img/profilePic.jpg" class="img-fluid">
+                                <img *ngIf="providerObj.image" class=" img-fluid" [src]="providerObj.image">
+                            </div>
+                        </div>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" routerLink="/provider/login">Logout</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="fewa_sidemenu">
+    <app-sidemenu></app-sidemenu>
+</div>
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-12">
+            <div class="userTabsMenu">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="true">Configuration</a>
+                    <a class="nav-link" id="v-pills-email-tab" data-toggle="pill" href="#v-pills-email" role="tab" aria-controls="v-pills-email" aria-selected="true" (click)="loadEmailTemplate()">Edit Invitation
+                        Email Template</a>
+                    <a class="nav-link" id="v-pills-addProvider-tab" data-toggle="pill" href="#v-pills-addProvider" role="tab" aria-controls="v-pills-addProvider" aria-selected="true">Add Provider</a>
+                </div>
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                        <div class="fewa-title">
+                            <h1>Update Practice Configuration</h1>
+                            <div class="message" *ngIf="this.updateMsg">Your configuration has been successfully updated</div>
+                        </div>
+                        <div class="tab-forms">
+                            <form [formGroup]="practiceConfigForm">
+                                <!-- <h2>Practice Details :</h2> -->
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group">
+                                            <label>Practice Name<span class="red-text">*</span></label>
+                                            <input type="text" class="form-control" name="hospital_name" formControlName="hospital_name" />
+                                            <div *ngIf="practiceFormControls.hospital_name.touched && practiceFormControls.hospital_name.invalid" style="color: red;">
+                                                <div *ngIf="practiceFormControls.hospital_name.errors.required">
+                                                    Practice name is required.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group">
+                                            <label>Practice Contact No.<span class="red-text">*</span></label>
+                                            <input type="text" maxlength="14" placeholder="eg:- (999) 999-9999" class="form-control" name="hospital_contact" formControlName="hospital_contact">
+                                            <!-- <div *ngIf="practiceConfigForm.controls['hospital_contact'].hasError('pattern')"style="color: red;">Enter 10 digit Contact No.</div> -->
+                                            <div *ngIf="practiceFormControls.hospital_contact.touched && practiceFormControls.hospital_contact.invalid" style="color: red;">
+                                                <div *ngIf="practiceFormControls.hospital_contact.errors.required">
+                                                    Practice contact is required.
+                                                </div>
+                                                <div *ngIf="practiceFormControls.hospital_contact.errors.pattern">
+                                                    Invalid contact number.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group">
+                                            <label>Practice Email<span class="red-text">*</span></label>
+                                            <input type="email" class="form-control" name="email" formControlName="hospital_email" />
+                                            <div *ngIf="practiceFormControls.hospital_email.touched && practiceFormControls.hospital_email.invalid" style="color: red;">
+                                                <div *ngIf="practiceFormControls.hospital_email.errors.required">Email is required.
+                                                </div>
+                                                <div *ngIf="practiceFormControls.hospital_email.errors.pattern">Invalid email address.</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Practice Logo</label>
+                                        </div>
+                                        <input id="file-upload1" type="file" formControlName="hospital_logo" (change)="onFileChanged($event)" accept=".png,.jpg,.jpeg" />
+                                        <!-- <label *ngIf="logoToUpload">{{logoToUpload.name}}</label> -->
+                                        <!-- <span class="upload" *ngIf="logoProgress > 0">
+                                            {{logoProgress}}%
+                                        </span>
+                                        <span class="upload" *ngIf="logoMessage">
+                                            {{logoMessage}}
+                                        </span> -->
+                                        <label *ngIf="selectedFile"> {{selectedFile.name}}</label>
+                                        <div class="errorMessage" *ngIf="this.fileFormatMsg" style="text-align: left;">Upload only image, file format not allowed</div>
+                                        <div class="errorMessage" *ngIf="this.fileSizeMsg" style="text-align: left;">Please upload file less than 2MB</div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group">
+                                            <label>Practice Description</label>
+                                            <textarea rows="6" class="form-control" name="hospital_description" formControlName="hospital_description"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+
+                                    </div>
+                                    <div class="col-12 col-md-6 text-right">
+                                        <ul>
+                                            <li><button class="cancelBtn" (click)="resetPracticeForm()">Cancel</button>
+                                            </li>
+                                            <li><button class="saveBtn" [disabled]="!practiceConfigForm.valid" (click)="updatePracticeConfiguration()">Save</button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Email Configuration -->
+                    <div class="tab-pane fade" id="v-pills-email" role="tabpanel" aria-labelledby="v-pills-email-tab">
+                        <div class="fewa-title">
+                            <h1>Update Email Configuration</h1>
+                        </div>
+                        <div class="tab-forms">
+                            <form [formGroup]="PracticeEmailForm">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <div style="border:1px solid black;margin-top:3% !important">
+                                                <p *ngIf="!showEditor" style="height:auto;pointer-events:none;padding-top:2% !important" id="content" [innerHTML]="emailTemplateUrl()">
+                                                </p>
+                                                <div *ngIf="showEditor" style="margin:4%;">
+                                                    <angular-editor formControlName="addContent" [(ngModel)]="practiceObj.emailAdditionalContent" [config]="config"></angular-editor>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-md-8">
+
+                                                    </div>
+                                                    <div class="col-12 col-md-4 text-right mt-2 mb-2 pr-5">
+                                                        <button *ngIf="!showEditor" (click)="editTemplate()" class="cancelBtn" style="border-style:dashed;"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                height="24" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <path
+                                                                    d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34">
+                                                                </path>
+                                                                <polygon points="18 2 22 6 12 16 8 16 8 12 18 2">
+                                                                </polygon>
+                                                            </svg> Edit Template
+                                                        </button>
+                                                        <button *ngIf="showEditor" (click)="previewEmailTemplate()" class="saveBtn" style="border-style:dashed;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                height="24" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z">
+                                                                </path>
+                                                                <circle cx="12" cy="12" r="3"></circle>
+                                                            </svg>
+                                                            Preview Changes
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="message" *ngIf="this.templateMsg">Your invitation email template has been successfully updated</div>
+                                    </div>
+                                    <div class="col-12 col-md-6 text-right">
+                                        <ul>
+                                            <li><button class="cancelBtn" (click)="resetPracticeEmailForm()">Cancel</button>
+                                            </li>
+                                            <li><button class="saveBtn" [disabled]="!PracticeEmailForm.valid" (click)="updatePracticeEmailConfiguration()">Save</button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Add Provider -->
+                    <div class="tab-pane fade" id="v-pills-addProvider" role="tabpanel" aria-labelledby="v-pills-addProvider-tab">
+                        <div class="fewa-title">
+                            <h1>Add Provider</h1>
+                            <div class="message" *ngIf="this.addProviderMsg">Successfully added a provider {{this.addProviderObj.userName}}. User can now login using their assigned username and password at your practice website - https://www.fewatele.com/{{this.addProviderObj.practice}}/ or the user’s personal website https://www.fewatele.com/{{this.addProviderObj.practice}}/{{this.addProviderObj.userName}}</div>
+                            <div class="errorMessage" *ngIf="this.addProblemMsg">There is a problem</div>  
+                            <div class="message" *ngIf="this.editProviderMsg">Successfully updated a provider. User can now login using their assigned username and password at your practice website - https://www.fewatele.com/{{this.addProviderObj.practice}}/ or the user’s personal website https://www.fewatele.com/{{this.addProviderObj.practice}}/{{this.addProviderObj.userName}}</div>
+                            <div class="errorMessage" *ngIf="this.addProblemMsg">There is a problem</div>  
+                            <div class="message" *ngIf="this.removeProviderMsg">Successfully deleted a provider {{this.addProviderObj.userName}}</div>  
+                            <div class="errorMessage" *ngIf="this.removeAdminMsg">You can not delete Admin</div>
+                            <div class="errorMessage" *ngIf="this.addProErrorMsg">Provider already exists</div>
+                        </div>
+                        <div class="tab-forms" style="max-height:546px;">
+                            <form [formGroup]="addProviderForm">
+                                <div class="row">
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>User Name<span class="red-text">*</span></label>
+                                            <input type="text" placeholder="User Name (without space)" class="form-control" name="userName" formControlName="userName">
+                                            <div *ngIf="addProviderFormControls.userName.touched && addProviderFormControls.userName.invalid" style="color: red;">
+                                                <div *ngIf="addProviderFormControls.userName.errors.required">User Name is required.
+                                                </div>
+                                                <div *ngIf="addProviderFormControls.userName.errors.validUserName">This username is already taken!
+                                                </div>
+                                                <!-- <div *ngIf="userFormControls.userName.errors.pattern">Invalid mobile
+                                                    number.</div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>User Email<span class="red-text">*</span></label>
+                                            <input type="email" placeholder="User Email" class="form-control" name="email" formControlName="email">
+                                            <div *ngIf="addProviderFormControls.email.touched && addProviderFormControls.email.invalid" style="color: red;">
+                                                <div *ngIf="addProviderFormControls.email.errors.required">User Email is required.
+                                                </div>
+                                                <div *ngIf="addProviderFormControls.email.errors.pattern">Invalid email address.
+                                                </div>
+                                                <div *ngIf="addProviderFormControls.email.errors.validEmail">This email is already taken!
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>Password<span class="red-text">*</span></label>
+                                            <input type="password" placeholder="Password" class="form-control" name="password" formControlName="password">
+                                            <div *ngIf="addProviderFormControls.password.touched && addProviderFormControls.password.invalid" style="color:red;">
+                                                <div *ngIf="addProviderFormControls.password.errors.required">Password is required.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 text-right">
+                                        <ul>
+                                            <li><button type="submit" (click)="resetAddProviderForm()" class="cancelBtn">Reset</button></li>
+                                            <li><button type="submit" [disabled]="!addProviderForm.valid || updateButton" (click)="addProvider()" class="saveBtn">Save</button></li>&nbsp;&nbsp;
+                                            <li><button type="submit" [disabled]="!addProviderForm.valid || !updateButton" (click)="editProvider()" class="saveBtn">Update</button></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card" style="box-shadow: none;">
+                                            <div class="card-body" style="padding: unset;">
+                                                <div class="fewa-title">
+                                                    <h1 style="text-align: left; display: inline;">Providers List</h1>
+                                                </div>
+                                                <br>
+                                                <div class="table-responsive tableFixHead">
+                                                    <table class="table table-bordered" style="width:100%;text-align:center;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sr. No</th>
+                                                                <th>Providers</th>
+                                                                <th>Email</th>
+                                                                <th>Password</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let array of providerList; let i=index">
+                                                                <td>{{i+1}}</td>
+                                                                <td>{{array.userName}}</td>
+                                                                <td>{{array.email}}</td>
+                                                                <td>{{array.password}}</td>
+                                                                <td>
+                                                                    <a (click)="edit(array)" href="javascript:;">
+                                                                        <svg fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28px" height="28px">
+                                                                            <path
+                                                                                d="M14.5 5.5L3 17 3 21 7 21 18.5 9.5zM21.707 4.879l-2.586-2.586c-.391-.391-1.024-.391-1.414 0L16 4l4 4 1.707-1.707C22.098 5.902 22.098 5.269 21.707 4.879z" />
+                                                                        </svg>
+                                                                    </a>
+                                                                    &nbsp;&nbsp;
+                                                                    <a (click)="removeProvider(array.userName)" href="javascript:;">
+                                                                        <svg fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28px" height="28px">
+                                                                            <path
+                                                                                d="M 10 2 L 9 3 L 4 3 L 4 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 5 7 L 5 20 C 5 21.1 5.9 22 7 22 L 17 22 C 18.1 22 19 21.1 19 20 L 19 7 L 5 7 z M 8 9 L 10 9 L 10 20 L 8 20 L 8 9 z M 14 9 L 16 9 L 16 20 L 14 20 L 14 9 z" />
+                                                                        </svg>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
